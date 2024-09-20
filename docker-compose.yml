@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   auto-claimer:
     build: .
@@ -14,3 +12,4 @@ services:
     volumes:
       - ./src:/app/src
     entrypoint: ["yarn", "cli"]
+    profiles: ["cli"]

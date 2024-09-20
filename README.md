@@ -125,17 +125,17 @@ You can use the CLI tool via Docker by following these steps:
 
    - List claimable rewards:
      ```
-     docker compose run --rm cli list
+     docker compose --profile cli run --rm cli list
      ```
 
    - Claim rewards for a specific epoch (e.g., epoch 220):
      ```
-     docker compose run --rm cli claim -e 220
+     docker compose --profile cli run --rm cli claim -e 220
      ```
 
    - Claim all unclaimed rewards:
      ```
-     docker compose run --rm cli claim -a
+     docker compose --profile cli run --rm cli claim -a
      ```
 
 ## Contributing

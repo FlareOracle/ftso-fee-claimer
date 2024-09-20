@@ -72,8 +72,8 @@ export class Claimer {
   }
 
   async getRewardClaimWithProofStructs() {
-    const claimableRewardEpochIds = (await this.getRewardEpochIdsWithClaimableRewards())?.slice(0, 2);
-    if (!claimableRewardEpochIds) {
+    const claimableRewardEpochIds = await this.getRewardEpochIdsWithClaimableRewards();
+    if (!claimableRewardEpochIds?.length) {
       return;
     }
     const rewardClaimWithProofStructs: IRewardManager.RewardClaimWithProofStruct[] = [];
@@ -90,7 +90,7 @@ export class Claimer {
   async claimAllUnclaimedRewards() {
     const rewardClaimWithProofStructs = await this.getRewardClaimWithProofStructs();
     if (!rewardClaimWithProofStructs?.length) {
-      console.log("No claimable reward found. Better luck next time!");
+      console.log("No claimable rewards found");
       return;
     }
     const epochIdsWithRewardClaims = rewardClaimWithProofStructs.map(({body}) => body.rewardEpochId);

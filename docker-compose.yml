@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  auto-claimer:
+    build: .
+    env_file: .env
+    volumes:
+      - ./src:/app/src
+    command: yarn auto-claimer
+
+  cli:
+    build: .
+    env_file: .env
+    volumes:
+      - ./src:/app/src
+    entrypoint: ["yarn", "cli"]

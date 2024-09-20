@@ -1,6 +1,6 @@
 # FTSO Fee Claimer
 
-This repository contains a CLI tool for FTSO data providers to claim FTSO v2 fee-based rewards on Flare and Songbird networks.
+This repository contains a CLI tool and an auto-claimer for FTSO data providers to claim FTSO v2 fee-based rewards on Flare and Songbird networks.
 
 ## Prerequisites
 
@@ -34,6 +34,8 @@ Claim Setup Manager contract addresses:
 Copy the `.env.template` file to `.env` and fill in the required values.
 
 ## Usage
+
+### CLI Tool
 
 The CLI tool provides the following commands:
 
@@ -75,6 +77,66 @@ To claim rewards, you have two options:
 3. Claim all unclaimed rewards:
    ```
    yarn cli claim -a
+
+### Auto-Claimer
+
+The auto-claimer is a service that automatically claims unclaimed rewards.
+
+To start the auto-claimer:
+
+1. Using yarn:
+   ```
+   yarn auto-claimer
+   ```
+
+2. Using Docker:
+   a. Build the Docker image:
+      ```
+      docker build -t ftso-fee-claimer .
+      ```
+      This command builds the Docker image for the project.
+
+   b. Start the service in the background:
+      ```
+      docker compose up -d
+      ```
+      This command starts the service in detached mode (-d flag), running it in the background.
+
+   Alternatively, you can build and start the service with a single command:
+   ```
+   docker compose up --build -d
+   ```
+   c. Monitor the logs:
+      ```
+      docker compose logs auto-claimer -f
+      ```
+      Use this command to follow (-f flag) the logs of the auto-claimer service.
+
+### Using CLI with Docker
+
+You can use the CLI tool via Docker by following these steps:
+
+1. Build the Docker image:
+   ```
+   docker build -t ftso-fee-claimer .
+   ```
+
+2. Run CLI commands using Docker Compose:
+
+   - List claimable rewards:
+     ```
+     docker compose run --rm cli list
+     ```
+
+   - Claim rewards for a specific epoch (e.g., epoch 220):
+     ```
+     docker compose run --rm cli claim -e 220
+     ```
+
+   - Claim all unclaimed rewards:
+     ```
+     docker compose run --rm cli claim -a
+     ```
 
 ## Contributing
 

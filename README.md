@@ -86,6 +86,7 @@ To start the auto-claimer:
 
 1. Using yarn:
    ```
+   yarn build
    yarn auto-claimer
    ```
 

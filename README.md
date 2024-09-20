@@ -98,14 +98,10 @@ To start the auto-claimer:
 
    b. Start the service in the background:
       ```
-      docker compose up -d
+      docker compose up -d auto-claimer
       ```
-      This command starts the service in detached mode (-d flag), running it in the background.
+      This command starts the auto-claimer service in detached mode (-d flag), running it in the background.
 
-   Alternatively, you can build and start the service with a single command:
-   ```
-   docker compose up --build -d
-   ```
    c. Monitor the logs:
       ```
       docker compose logs auto-claimer -f

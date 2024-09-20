@@ -1,13 +1,13 @@
 services:
   auto-claimer:
-    build: .
+    image: ftso-fee-claimer
     env_file: .env
     volumes:
       - ./src:/app/src
     command: yarn auto-claimer
 
   cli:
-    build: .
+    image: ftso-fee-claimer
     env_file: .env
     volumes:
       - ./src:/app/src

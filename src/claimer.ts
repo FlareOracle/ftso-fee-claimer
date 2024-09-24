@@ -27,6 +27,15 @@ export class Claimer {
     return recipient;
   }
 
+  get wrapRewards(): boolean {
+    const wrap = process.env.WRAP_REWARDS?.toLowerCase();
+
+    if (wrap === "true") return true;
+    if (wrap === "false") return false;
+
+    throw new Error("WRAP_REWARDS environment variable must be 'true' or 'false'");
+  }
+
   async getRewardEpochIdsWithClaimableRewards() {
     const [startRewardEpochId, endRewardEpochId] = await this.getClaimableRewardEpochIdRange()
     if (endRewardEpochId < startRewardEpochId) {
@@ -112,7 +121,7 @@ export class Claimer {
 
     const tx = await this.rewardManager
       .connect(claimExecutor.connect(provider))
-      .claim(this.identityAddress, this.recipientAddress, lastEpochIdToClaim, true, rewardClaimWithProofStructs)
+      .claim(this.identityAddress, this.recipientAddress, lastEpochIdToClaim, this.wrapRewards, rewardClaimWithProofStructs)
 
     console.log('Transaction submitted, waiting for confirmation...')
 
@@ -147,7 +156,7 @@ export class Claimer {
 
     const tx = await this.rewardManager
       .connect(claimExecutor)
-      .claim(this.identityAddress, this.recipientAddress, epochId, true, [rewardClaimData]);
+      .claim(this.identityAddress, this.recipientAddress, epochId, this.wrapRewards, [rewardClaimData]);
 
     console.log('📨 Transaction submitted, waiting for confirmation...')
 

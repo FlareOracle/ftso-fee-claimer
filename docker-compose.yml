@@ -5,6 +5,8 @@ services:
     volumes:
       - ./src:/app/src
     command: yarn auto-claimer
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
   cli:
     image: ftso-fee-claimer
@@ -12,3 +14,5 @@ services:
     volumes:
       - ./src:/app/src
     entrypoint: ["yarn", "cli"]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

@@ -30,10 +30,7 @@ export class Claimer {
   get wrapRewards(): boolean {
     const wrap = process.env.WRAP_REWARDS?.toLowerCase();
 
-    if (wrap === "true") return true;
-    if (wrap === "false") return false;
-
-    throw new Error("WRAP_REWARDS environment variable must be 'true' or 'false'");
+    return wrap !== 'false';
   }
 
   async getRewardEpochIdsWithClaimableRewards() {

@@ -14,7 +14,7 @@ export function getRewardCalculationDataPath(rewardEpochId: number) {
     case "songbird":
       return `https://raw.githubusercontent.com/flare-foundation/fsp-rewards/refs/heads/main/songbird/${rewardEpochId}/reward-distribution-data-tuples.json`;
     case "flare":
-      return `https://raw.githubusercontent.com/flare-foundation/fsp-rewards/refs/heads/main/flare/${rewardEpochId}/reward-distribution-data-tuples.json${rewardEpochId}/reward-distribution-data-tuples.json`;
+      return `https://raw.githubusercontent.com/flare-foundation/fsp-rewards/refs/heads/main/flare/${rewardEpochId}/reward-distribution-data-tuples.json`;
     default:
       throw new Error("Network not supported");
   }

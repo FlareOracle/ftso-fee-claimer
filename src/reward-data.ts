@@ -12,9 +12,9 @@ export function getRewardCalculationDataPath(rewardEpochId: number) {
     case "coston":
       return `https://gitlab.com/timivesel/ftsov2-testnet-rewards/-/raw/main/rewards-data/coston/${rewardEpochId}/reward-distribution-data-tuples.json`;
     case "songbird":
-      return `https://raw.githubusercontent.com/flare-foundation/FTSO-scaling/main/rewards-data/songbird/${rewardEpochId}/reward-distribution-data-tuples.json`;
+      return `https://raw.githubusercontent.com/flare-foundation/fsp-rewards/refs/heads/main/songbird/${rewardEpochId}/reward-distribution-data-tuples.json`;
     case "flare":
-      return `https://raw.githubusercontent.com/flare-foundation/FTSO-scaling/main/rewards-data/flare/${rewardEpochId}/reward-distribution-data-tuples.json`;
+      return `https://raw.githubusercontent.com/flare-foundation/fsp-rewards/refs/heads/main/flare/${rewardEpochId}/reward-distribution-data-tuples.json${rewardEpochId}/reward-distribution-data-tuples.json`;
     default:
       throw new Error("Network not supported");
   }

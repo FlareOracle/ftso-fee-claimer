@@ -1,3 +1,8 @@
+# Coded with the assistance of:
+With assistance from Burstftso:
+Telegram: @Burstftso https://t.me/Burstftso
+Twitter: @Burstnodes https://x.com/Burstnodes
+
 # FTSO Fee Claimer
 
 This repository contains a CLI tool and an auto-claimer for FTSO data providers to claim FTSO v2 fee-based rewards on Flare and Songbird networks.

@@ -1,21 +1,82 @@
 # FTSO Fee Claimer
 
-This repository contains a CLI tool and an auto-claimer for FTSO data providers to claim FTSO v2 fee-based rewards on Flare and Songbird networks.
+This repository contains a CLI tool and an auto-claimer for claiming FTSO v2 rewards on Flare and Songbird networks. It supports both FEE and DIRECT claim types.
+
+## Coded with the assistance of:
+- Light FTSO
+- Burstftso:
+  - Telegram: @Burstftso https://t.me/Burstftso
+  - Twitter: @Burstnodes https://x.com/Burstnodes
+
+## Understanding Claim Types
+
+The tool supports two types of claims:
+
+1. **FEE Claims (Type 1)**: 
+   - Used by data providers to claim their fee rewards
+   - Requires the identity address of the data provider
+   - Requires Merkle proofs for claiming
+
+2. **DIRECT Claims (Type 0)**:
+   - Direct reward claims to an address
+   - Requires signing policy address
+   - Requires Merkle proofs for claiming
+
+Both claim types require proof verification through the RewardManager smart contract.
 
 ## Prerequisites
 
-Before using this tool, ensure that you have set up an executor for your rewards:
+Before using this tool, ensure that you have set up an executor for your rewards. The setup process is similar for both FEE and DIRECT claims:
 
-1. Create an executor account: This is a separate account that will be authorized to claim rewards on behalf of your identity account.
+1. Create an executor account: This is a separate account that will be authorized to claim rewards on your behalf.
 2. Fund the executor account: Ensure it has enough native tokens to cover transaction fees.
-3. Authorize the executor: Use your identity account to set the executor in the Flare Portal (https://portal.flare.network/) or directly in the ClaimSetupManager contract (function 13. setClaimExecutors).
-4. Set up claim recipient: Add the recipient address to allowed claim recipients in the ClaimSetupManager contract (function 11. setAllowedClaimRecipient).
 
-The executor system allows you to delegate the claiming process to a separate account, enhancing security by not requiring your main identity account to sign claim transactions.
+3. Authorize the executor:
+   - For FEE claims: Use your identity account to authorize the executor
+   - For DIRECT claims: Use your signing policy account to authorize the executor
+   You can do this through:
+   - Flare Portal (https://portal.flare.network/) 
+   - Directly in the ClaimSetupManager contract (function 13. setClaimExecutors)
+
+4. Set up claim recipient: 
+   - For FEE claims: Add the recipient address to allowed claim recipients for your identity address
+   - For DIRECT claims: Add the recipient address to allowed claim recipients for your signing policy address
+   This can be done through the ClaimSetupManager contract (function 11. setAllowedClaimRecipient)
+
+The executor system allows you to delegate the claiming process to a separate account, enhancing security by not requiring your main accounts (identity or signing policy) to sign claim transactions.
 
 Claim Setup Manager contract addresses:
 - Flare: [0xD56c0Ea37B848939B59e6F5Cda119b3fA473b5eB](https://flare-explorer.flare.network/address/0xD56c0Ea37B848939B59e6F5Cda119b3fA473b5eB)
 - Songbird: [0xDD138B38d87b0F95F6c3e13e78FFDF2588F1732d](https://songbird-explorer.flare.network/address/0xDD138B38d87b0F95F6c3e13e78FFDF2588F1732d)
+
+## Configuration
+
+Copy the `.env.template` file to `.env` and fill in the required values.
+
+### Understanding the Addresses
+
+The system involves several different addresses, each with a specific role:
+
+1. **Identity Address** (`IDENTITY_ADDRESS`):
+   - Required for FEE claims
+   - This is the beneficiary address for FEE claims
+   - Typically the data provider's identity address
+
+2. **Signing Policy Address** (`SIGNING_POLICY_ADDRESS`):
+   - Required for DIRECT claims
+   - This is the beneficiary address for DIRECT claims
+   - The address that receives direct rewards
+
+3. **Claim Executor** (`CLAIM_EXECUTOR_PRIVATE_KEY`):
+   - Required for both claim types
+   - The account that executes the claim transactions
+   - Must be authorized by both the identity address (for FEE claims) and signing policy address (for DIRECT claims)
+   - Only needs enough native tokens for transaction fees
+
+4. **Claim Recipient** (`CLAIM_RECIPIENT_ADDRESS`):
+   - Required for both claim types
+   - The address where claimed rewards will be sent
+   - Must be authorized as a recipient by both the identity address and signing policy address
 
 ## Installation
 
@@ -29,19 +90,15 @@ Claim Setup Manager contract addresses:
    yarn build
    ```
 
-## Configuration
-
-Copy the `.env.template` file to `.env` and fill in the required values.
-
 ## Usage
 
 ### CLI Tool
 
-The CLI tool provides the following commands:
+The CLI tool provides commands for both FEE and DIRECT claims:
 
 ### Listing Claimable Rewards
 
-To list all claimable reward epochs and their amounts:
+To list all claimable reward epochs and their amounts for both claim types:
 
 ```
 yarn cli list
@@ -49,34 +106,37 @@ yarn cli list
 
 ### Claiming Rewards
 
-To claim rewards, you have two options:
+The `claim` command is flexible and can be used in several ways:
 
-1. Claim rewards for a specific epoch:
+1. Claim all unclaimed rewards for both types:
+   ```bash
+   yarn cli claim
    ```
-   yarn cli claim -e <epoch_number>
-   ```
-   Replace `<epoch_number>` with the desired epoch number.
+   This will claim all unclaimed FEE and DIRECT rewards.
 
-2. Claim all unclaimed rewards:
-   ```
-   yarn cli claim -a
-   ```
+2. Claim specific type:
+   ```bash
+   # Claim all FEE rewards
+   yarn cli claim -t fee
 
-### Examples
-
-1. List claimable rewards:
-   ```
-   yarn cli list
+   # Claim all DIRECT rewards
+   yarn cli claim -t direct
    ```
 
-2. Claim rewards for epoch 10:
-   ```
+3. Claim specific epoch:
+   ```bash
+   # Claim both FEE and DIRECT rewards for epoch 220
    yarn cli claim -e 220
    ```
 
-3. Claim all unclaimed rewards:
+4. Claim specific type and epoch:
+   ```bash
+   # Claim only FEE rewards for epoch 220
+   yarn cli claim -t fee -e 220
+
+   # Claim only DIRECT rewards for epoch 220
+   yarn cli claim -t direct -e 220
    ```
-   yarn cli claim -a
 
 ### Auto-Claimer
 
@@ -125,14 +185,14 @@ You can use the CLI tool via Docker by following these steps:
      docker compose run --rm cli list
      ```
 
-   - Claim rewards for a specific epoch (e.g., epoch 220):
+   - Claim FEE and DIRECT rewards for a specific epoch (e.g., epoch 220):
      ```
      docker compose run --rm cli claim -e 220
      ```
 
    - Claim all unclaimed rewards:
      ```
-     docker compose run --rm cli claim -a
+     docker compose run --rm cli claim
      ```
 
 ## Contributing

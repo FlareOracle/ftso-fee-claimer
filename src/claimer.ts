@@ -26,14 +26,6 @@ export class Claimer {
 
 	private rewardManager = rewardManager;
 
-	get identityAddress(): string {
-		const identityAddress = process.env.IDENTITY_ADDRESS;
-		if (!identityAddress) {
-			throw new Error("IDENTITY_ADDRESS environment variable is not set");
-		}
-		return identityAddress;
-	}
-
 	get recipientAddress(): string {
 		const recipient = process.env.CLAIM_RECIPIENT_ADDRESS;
 		if (!recipient) {
@@ -79,7 +71,7 @@ export class Claimer {
 		}
 		const rewardClaims = rewardsData.rewardClaims.find(
 			([_, [id, address, sum, claimType]]) =>
-				address.toLowerCase() === this.identityAddress.toLowerCase() && claimType === this.claimType,
+				address.toLowerCase() === this.beneficiary.toLowerCase() && claimType === this.claimType,
 		);
 		if (!rewardClaims) {
 			return null;
@@ -142,7 +134,7 @@ export class Claimer {
 		const tx = await this.rewardManager
 			.connect(claimExecutor.connect(provider))
 			.claim(
-				this.identityAddress,
+				this.beneficiary,
 				this.recipientAddress,
 				lastEpochIdToClaim,
 				this.wrapRewards,
@@ -182,7 +174,7 @@ export class Claimer {
 
 		const tx = await this.rewardManager
 			.connect(claimExecutor)
-			.claim(this.identityAddress, this.recipientAddress, epochId, this.wrapRewards, [rewardClaimData]);
+			.claim(this.beneficiary, this.recipientAddress, epochId, this.wrapRewards, [rewardClaimData]);
 
 		console.log("📨 Transaction submitted, waiting for confirmation...");
 
@@ -193,7 +185,7 @@ export class Claimer {
 	}
 
 	private async getClaimableRewardEpochIdRange() {
-		const startRewardEpochId = await this.rewardManager.getNextClaimableRewardEpochId(this.identityAddress);
+		const startRewardEpochId = await this.rewardManager.getNextClaimableRewardEpochId(this.beneficiary);
 		const [_, endRewardEpochId] = await this.rewardManager.getRewardEpochIdsWithClaimableRewards();
 		return [startRewardEpochId, endRewardEpochId];
 	}

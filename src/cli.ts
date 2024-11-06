@@ -86,9 +86,16 @@ program
 				// Type not defined, claim all available types
 				if (options.epoch) {
 					const epoch = parseEpoch(options.epoch);
-					await Promise.all([Claimer.DIRECT?.claimRewards(epoch), Claimer.FEE?.claimRewards(epoch)]);
-				} else {
-					await Promise.all([Claimer.DIRECT?.claimAllUnclaimedRewards(), Claimer.FEE?.claimAllUnclaimedRewards()]);
+					const claimers = [Claimer.DIRECT, Claimer.FEE].filter((claimer): claimer is Claimer => claimer !== null);
+					if (options.epoch) {
+						for (const claimer of claimers) {
+							await claimer.claimRewards(epoch);
+						}
+					} else {
+						for (const claimer of claimers) {
+							await claimer.claimAllUnclaimedRewards();
+						}
+					}
 				}
 			}
 		} catch (error) {

@@ -120,7 +120,7 @@ program
 				// Get reward epochs with claimable rewards for the current claim type
 				const claimableEpochs = await claimer.getRewardEpochIdsWithClaimableRewards();
 				if (claimableEpochs === null) {
-					console.log(`No claimable rewards found for ${ClaimType[claimer.claimType]}`);
+					console.log(`No claimable ${ClaimType[claimer.claimType]} rewards found`);
 					continue;
 				}
 

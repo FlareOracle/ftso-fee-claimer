@@ -103,32 +103,25 @@ program
 
 program
 	.command("list")
-	.description("List claimable reward epochs and their amounts for FEE, WNAT, and DIRECT claim types")
+	.description("List claimable reward epochs and their amounts for FEE and DIRECT claim types")
 	.action(async () => {
-		const claimer = new Claimer();
-		const supportedClaimTypes: ClaimType[] = [ClaimType.FEE, ClaimType.WNAT, ClaimType.DIRECT];
+		const claimers = [Claimer.FEE, Claimer.DIRECT].filter((claimer): claimer is Claimer => claimer !== null);
 
 		try {
-			// Iterate through FEE, WNAT, and DIRECT claim types to list all claimable epochs
-			for (const claimType of supportedClaimTypes) {
+			// Iterate through FEE and DIRECT claim types to list all claimable epochs
+			for (const claimer of claimers) {
 				// Get reward epochs with claimable rewards for the current claim type
-				const claimableEpochs = await claimer.getRewardEpochIdsWithClaimableRewards(claimType);
+				const claimableEpochs = await claimer.getRewardEpochIdsWithClaimableRewards();
 				if (claimableEpochs === null) {
-					console.log(`No claimable rewards found for ${ClaimType[claimType]}`);
+					console.log(`No claimable rewards found for ${ClaimType[claimer.claimType]}`);
 					continue;
 				}
 
-				console.log(`🎉 Claimable ${ClaimType[claimType]} reward epochs and amounts:`);
+				console.log(`🎉 Claimable ${ClaimType[claimer.claimType]} reward epochs and amounts:`);
 				for (const epoch of claimableEpochs) {
-					const rewardData = await claimer.getRewardClaimData(epoch, claimType);
+					const rewardData = await claimer.getRewardClaimData(epoch);
 					if (rewardData?.body?.amount) {
-						if (claimType === ClaimType.WNAT) {
-							// For WNAT claimType, display "Dust"
-							console.log(`✨ Epoch ${epoch}: Dust`);
-						} else {
-							// For FEE and DIRECT claimType, display the formatted amount
-							console.log(`✨ Epoch ${epoch}: ${formatEther(rewardData.body.amount)}`);
-						}
+						console.log(`✨ Epoch ${epoch}: ${formatEther(rewardData.body.amount)}`);
 					} else {
 						console.log(`❌ Epoch ${epoch}: No reward data available`);
 					}

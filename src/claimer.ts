@@ -97,7 +97,7 @@ export class Claimer {
 		for (const epochId of claimableRewardEpochIds) {
 			const rewardClaimData = await this.getRewardClaimData(epochId);
 			if (!rewardClaimData) {
-				break;
+				continue;
 			}
 			rewardClaimWithProofStructs.push(rewardClaimData);
 		}

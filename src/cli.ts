@@ -84,17 +84,16 @@ program
 				}
 			} else {
 				// Type not defined, claim all available types
+				const claimers = [Claimer.DIRECT, Claimer.FEE].filter((claimer): claimer is Claimer => claimer !== null);
+
 				if (options.epoch) {
 					const epoch = parseEpoch(options.epoch);
-					const claimers = [Claimer.DIRECT, Claimer.FEE].filter((claimer): claimer is Claimer => claimer !== null);
-					if (options.epoch) {
-						for (const claimer of claimers) {
-							await claimer.claimRewards(epoch);
-						}
-					} else {
-						for (const claimer of claimers) {
-							await claimer.claimAllUnclaimedRewards();
-						}
+					for (const claimer of claimers) {
+						await claimer.claimRewards(epoch);
+					}
+				} else {
+					for (const claimer of claimers) {
+						await claimer.claimAllUnclaimedRewards();
 					}
 				}
 			}
